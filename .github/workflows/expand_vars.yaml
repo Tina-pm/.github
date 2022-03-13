@@ -1,0 +1,22 @@
+name: "Provide outputs as dependencies, usable in more contexts"
+
+
+on:
+  workflow_call:
+    outputs:
+      lowercase_org:
+        value: ${{ jobs.vars.outputs.lowercase_org }}
+        description: "Lowercase version of GITHUB_REPOSITORY_OWNER"
+
+
+jobs:
+  vars:
+    runs-on: ubuntu-latest
+    outputs:
+      lowercase_org: ${{ steps.set_variables.outputs.saved_org_name }}
+    steps:
+      - id: set_variables
+        name: Set output variables
+        # NOTE: bash 5.1 (jammy) has: ${GITHUB_REPOSITORY_OWNER@l}
+        run: |
+          echo "::set-output name=saved_org_name::${GITHUB_REPOSITORY_OWNER,,}"
